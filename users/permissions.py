@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 class IsModeratororSelf(BasePermission):
-    "mods have access to everything and normal users can only access themselves"
+    "mods have access to every user obj and normal users can only access themselves"
 
     def has_object_permission(self, request, view, obj):
         if request.user.role == "moderator":
