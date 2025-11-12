@@ -7,20 +7,18 @@ from users.services.login_service import LoginService
 from users.models import User
 from .throttle import LoginThrottle
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSignUpSerializer
-
     @action(detail=False, methods=["post"], url_path="signup")
     def signup(self, request):
         serializer = UserSignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = UserService.signup_user(serializer.validated_data)
-        output = UserSignUpSerializer(user)
+        output = UserSignUpSerializer(user) #passing user object to serializer
         return Response({"detail": "User created successfully, please log in.", "user": output.data },status=status.HTTP_201_CREATED)
 
-    @action(detail=False, methods=["post"], url_path="login", throttle_classes=[LoginThrottle])
+    @action(detail=False, methods=["get","post"], url_path="login", throttle_classes=[LoginThrottle])
     def login(self, request):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

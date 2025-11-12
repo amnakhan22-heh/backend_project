@@ -1,4 +1,3 @@
-from users.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class LoginService:
