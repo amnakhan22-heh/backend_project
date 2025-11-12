@@ -5,8 +5,7 @@ from .serializers import UserSignUpSerializer, UserLoginSerializer
 from users.services.signup_service import UserService
 from users.services.login_service import LoginService
 from users.models import User
-from rest_framework.throttling import UserRateThrottle
-
+from .throttle import LoginThrottle
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,9 +20,6 @@ class UserViewSet(viewsets.ModelViewSet):
         output = UserSignUpSerializer(user)
         return Response({"detail": "User created successfully, please log in.", "user": output.data },status=status.HTTP_201_CREATED)
 
-class LoginThrottle(UserRateThrottle):
-    rate = '5/min'
-
     @action(detail=False, methods=["post"], url_path="login", throttle_classes=[LoginThrottle])
     def login(self, request):
         serializer = UserLoginSerializer(data=request.data)
@@ -32,5 +28,5 @@ class LoginThrottle(UserRateThrottle):
         tokens = LoginService.get_token(user)
 
         return Response({
-            "detail": "Login successful", "user": user, "tokens": tokens}, status=status.HTTP_200_OK)
+            "detail": "Login successful", "tokens": tokens}, status=status.HTTP_200_OK)
 
