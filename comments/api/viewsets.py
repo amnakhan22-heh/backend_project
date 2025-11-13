@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CommentSerializer
 from comments.models import Comment
@@ -17,4 +17,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response({
             "detail": "Comment successfully created",
             "comment": serializer.data
-        })
+        }, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        comment = self.get_object()
+        comment.delete()
+        return Response({
+            "detail": "Comment successfully deleted",
+        }, status=status.HTTP_200_OK)
+
