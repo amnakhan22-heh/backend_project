@@ -34,6 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         user = UserService.signup_user(serializer.validated_data)
         output = UserSignUpSerializer(user) #passing user object to serializer
+
         return Response({"detail": "User created successfully, please log in.", "user": output.data },status=status.HTTP_201_CREATED)
 
     @action(detail=False,
