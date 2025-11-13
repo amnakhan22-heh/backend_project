@@ -19,6 +19,14 @@ class UserSignUpSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Passwords do not match')
         return attrs
 
+    def update(self, instance, validated_data):
+        validated_data.pop("confirm_password", None)
+        password = validated_data.pop("password", None)
+        #hashing the password on update
+        if password:
+            instance.set_password(password)
+
+        return super().update(instance, validated_data)
 
 class UserLoginSerializer(serializers.Serializer):
    username = serializers.CharField(required=True , write_only=True)

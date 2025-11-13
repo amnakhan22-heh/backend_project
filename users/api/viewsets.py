@@ -28,7 +28,8 @@ class UserViewSet(viewsets.ModelViewSet):
             return User.objects.filter(id=user.id)
     @action(detail=False,
             methods=["post"],
-            url_path="signup")
+            url_path="signup",
+            serializer_class=UserSignUpSerializer)
     def signup(self, request):
         serializer = UserSignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -40,6 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False,
             methods=["post"],
             url_path="login",
+            serializer_class=UserLoginSerializer,
             throttle_classes=[LoginThrottle])
     def login(self, request):
         serializer = UserLoginSerializer(data=request.data)
