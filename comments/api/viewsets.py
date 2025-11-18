@@ -6,10 +6,16 @@ from comments.permissions import CanAccessComments
 from rest_framework.response import Response
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all().order_by('-created_at')
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, CanAccessComments]
-    http_method_names = ['get', 'put', 'patch', 'delete']
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, post = serializer.validated_data['post'], parent=serializer.validated_data.get('parent', None))
+
+        return Response({'detail':"Comment created successfully", "comment": serializer.data}, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         comment = self.get_object()
