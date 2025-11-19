@@ -3,7 +3,7 @@ from comments.models import Comment
 from posts.models import Post
 
 class CommentSerializer(serializers.ModelSerializer):
-    post = serializers.IntegerField(write_only=True)  # only for input
+    post = serializers.IntegerField(write_only=True)
     parent = serializers.IntegerField(write_only=True, required=False, allow_null=True)
     username = serializers.CharField(source="user.username", read_only=True)
     text = serializers.CharField(required=True, allow_blank=False)
@@ -13,7 +13,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id','username','text', 'created_at', 'parent','post', 'post_id', 'replies']
-        read_only_fields = ['id' ,'user','created_at','updated_at']
+        read_only_fields = ['id' ,'user','created_at']
 
     def validate_post(self, value):
         if type(value) is not int:

@@ -13,6 +13,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['post_id', 'content', 'username', 'created_at', 'comments']
 
     def get_comments(self, obj):
-        top_comments = obj.comments.filter(parent__isnull=True) #obj here is an instance of Post
+        top_comments = obj.comments.filter(parent__isnull=True)
         return CommentSerializer(top_comments, many=True).data
 
