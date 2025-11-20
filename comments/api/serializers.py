@@ -14,6 +14,12 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id','username','text', 'created_at', 'parent','post', 'replies']
         read_only_fields = ['id' ,'user','created_at']
 
+    def validate_parent(self, value):
+        if value.replies.exists():
+            raise serializers.ValidationError(
+                   f"Comment with id {value.id} already has a reply. Only one reply per comment is allowed.")
+        return value
+
     def get_replies(self, obj):
         if obj.replies.exists():
             return CommentSerializer(obj.replies.all(), many=True).data #refers to replies of a comment in the same table using fk relationship
