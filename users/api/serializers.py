@@ -9,10 +9,11 @@ class UserSignUpSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, allow_blank=False)
     first_name = serializers.CharField(required=True,allow_blank=False)
     last_name = serializers.CharField(required=True,allow_blank=False)
+    post_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'confirm_password')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'confirm_password', 'post_liked')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
@@ -27,6 +28,9 @@ class UserSignUpSerializer(serializers.ModelSerializer):
             instance.set_password(password)
 
         return super().update(instance, validated_data)
+
+    def get_post_liked(self, user):
+        return list(user.likes.values_list('id', flat=True))
 
 class UserLoginSerializer(serializers.Serializer):
    username = serializers.CharField(required=True , write_only=True)

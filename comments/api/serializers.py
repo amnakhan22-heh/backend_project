@@ -15,6 +15,10 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ['id' ,'user','created_at']
 
     def validate_parent(self, value):
+        post_id = self.initial_data.get('post')
+        post_obj = Post.objects.get(id=post_id)
+        if value.post != post_obj:
+            raise serializers.ValidationError("Parent id does not exist for this post")
         if value.replies.exists():
             raise serializers.ValidationError(
                    f"Comment with id {value.id} already has a reply. Only one reply per comment is allowed.")

@@ -1,5 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
+
+from posts.models import Post
 from .serializers import CommentSerializer
 from comments.models import Comment
 from comments.permissions import CanAccessComments

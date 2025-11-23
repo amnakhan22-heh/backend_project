@@ -5,6 +5,8 @@ from posts.models import Post
 from posts.permissions import CanAccessPosts
 from rest_framework.response import Response
 from rest_framework import serializers
+from rest_framework.decorators import action
+
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -34,6 +36,20 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response({
             "detail": "Post successfully deleted",
         }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods = ['post'])
+    def reaction(self, request, pk=None):
+        user = self.request.user
+        post = self.get_object()
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return Response({"status":"unliked post successfully"}, status=status.HTTP_200_OK)
+        else:
+            post.likes.add(user)
+            return Response({"status":"liked post successfully"}, status=status.HTTP_200_OK)
+
+
 
 
 
